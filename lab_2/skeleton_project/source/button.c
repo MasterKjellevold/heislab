@@ -1,6 +1,6 @@
 #include "button.h"
 
-Button buttons[];
+Button *buttons[(N_FLOORS-2)*3+4];
 
 
 void init_button(){
@@ -16,9 +16,9 @@ void init_button(){
         Button *newDown = {newDown->floor = f, newDown->buttonType = BUTTON_HALL_DOWN};
         Button *newCab = {newCab->floor = f, newCab->buttonType = BUTTON_CAB};
 
-        button[count] = newUp;
-        button[count + 1] = newDown;
-        button[count + 2] = newCab;
+        buttons[count] = newUp;
+        buttons[count + 1] = newDown;
+        buttons[count + 2] = newCab;
         count += 3;
     }
     // initialize buttons in last floor
