@@ -1,6 +1,6 @@
 #include "order.h"
 void init();
-void addToQueue(order o);
+void addToQueue(order *o);
 
 typedef struct{
     order *order;
