@@ -1,10 +1,11 @@
-#include "elevio.h"
+#include "order.h"
 
 typedef struct{
     ButtonType buttonType;
     bool isPressed;
     int floor;
     bool lightIsOn;
+    Order order;
 } Button;
 
 // isPressed can be found by using the function elevio_callButton(int floor, ButtonType button).

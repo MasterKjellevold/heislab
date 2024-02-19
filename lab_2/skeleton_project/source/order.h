@@ -3,4 +3,4 @@
 typedef struct {
     int floor;
     ButtonType btype;
-} order;
+} Order;

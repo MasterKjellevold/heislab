@@ -6,13 +6,13 @@
 OrderList *head; // peker til det første elementet
 
 void init(){
-    order headNode = {headNode.floor = 0, headNode.btype = BUTTON_CAB}; // lager en vilkårlig head node.
+    Order headNode = {headNode.floor = 0, headNode.btype = BUTTON_CAB}; // lager en vilkårlig head node.
     OrderList *null_ptr = NULL;
     OrderList objectives = {objectives.order = &headNode, objectives.next=null_ptr};
     head = &objectives; // setter head peker til den initialiserte objective
 }
 
-void addToQueue(order *o){ 
+void addToQueue(Order *o){ 
     OrderList* new = {new->next = NULL, new->order = o}; //tar inn en ny order, lager en peker til struct orderlist
     OrderList* p = head;
     while(p != NULL){ //travarserer gjennom lista
