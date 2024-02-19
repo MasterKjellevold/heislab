@@ -2,9 +2,9 @@
 
 typedef struct{
     ButtonType buttonType;
-    bool isPressed;
+    int isPressed;
     int floor;
-    bool lightIsOn;
+    int lightIsOn;
 } Button;
 
 
