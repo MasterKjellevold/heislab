@@ -6,5 +6,5 @@ void addToQueue(Order *o);
 
 typedef struct{
     Order *order;
-    OrderList *next;
+    struct OrderList *next;
  }OrderList;

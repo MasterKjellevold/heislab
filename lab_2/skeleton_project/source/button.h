@@ -1,5 +1,7 @@
 #include "order.h"
 
+
+void button_init();
 typedef struct{
     ButtonType buttonType;
     int isPressed;

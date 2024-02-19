@@ -5,7 +5,6 @@
 #include "queue.h"
 
 
-
 int main(){
     elevio_init();
     
@@ -15,7 +14,7 @@ int main(){
     elevio_motorDirection(DIRN_UP);
 
     queue_init();
-    
+    button_init();
 
     while(1){
 
