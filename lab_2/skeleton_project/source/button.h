@@ -5,8 +5,9 @@ typedef struct{
     bool isPressed;
     int floor;
     bool lightIsOn;
-    Order order;
 } Button;
+
+
 
 // isPressed can be found by using the function elevio_callButton(int floor, ButtonType button).
 // This function returns an int.
