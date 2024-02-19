@@ -1,8 +1,10 @@
-#include "order.h"
-void init();
-void addToQueue(order *o);
+#pragma once
+#include "button.h"
+
+void queue_init();
+void addToQueue(Order *o);
 
 typedef struct{
-    order *order;
+    Order *order;
     OrderList *next;
  }OrderList;

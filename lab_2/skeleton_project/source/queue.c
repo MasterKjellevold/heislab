@@ -1,11 +1,10 @@
 #include "queue.h"
 #include <stddef.h>
-#include "order.h"
 
 
 OrderList *head; // peker til det første elementet
 
-void init(){
+void queue_init(){
     Order headNode = {headNode.floor = 0, headNode.btype = BUTTON_CAB}; // lager en vilkårlig head node.
     OrderList *null_ptr = NULL;
     OrderList objectives = {objectives.order = &headNode, objectives.next=null_ptr};

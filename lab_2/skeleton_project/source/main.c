@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <signal.h>
 #include <time.h>
-#include "driver/elevio.h"
+#include "queue.h"
 
 
 
@@ -14,7 +14,12 @@ int main(){
 
     elevio_motorDirection(DIRN_UP);
 
+    queue_init();
+    
+
     while(1){
+
+        // loop through buttons
         int floor = elevio_floorSensor();
 
         if(floor == 0){
