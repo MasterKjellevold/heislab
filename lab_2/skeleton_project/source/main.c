@@ -13,14 +13,38 @@ int main(){
 
     elevio_motorDirection(DIRN_UP);
 
-    queue_init();
     button_init();
+
+    OrderList * head = NULL;
+    Order test1 = {test1.floor = 1, test1.btype = BUTTON_HALL_DOWN};
+    Order test2 = {test1.floor = 1, test1.btype = BUTTON_HALL_UP};
+    Order test3 = {test1.floor = 88, test1.btype = BUTTON_HALL_DOWN};
+    addToQueue(&head, test1);
+    addToQueue(&head, test2);
+    addToQueue(&head, test3);
 
     while(1){
 
+
+        // skrape data
         // loop through buttons
         int floor = elevio_floorSensor();
+        Order firstOrder = head->order;
+        int test = firstOrder.floor;
+        int stop = elevio_stopButton();
+        int obstruction = elevio_obstruction();
+        printf("%d", floor);
 
+        if(floor > 2){
+            elevio_motorDirection(DIRN_DOWN);
+        }else if(floor < 2){
+            elevio_motorDirection(DIRN_UP);
+        }else{
+            elevio_motorDirection(DIRN_STOP);
+        }
+
+
+        /*
         if(floor == 0){
             elevio_motorDirection(DIRN_UP);
         }
@@ -28,7 +52,7 @@ int main(){
         if(floor == N_FLOORS-1){
             elevio_motorDirection(DIRN_DOWN);
         }
-
+        */
         /*
         for(int f = 0; f < N_FLOORS; f++){
             for(int b = 0; b < N_BUTTONS; b++){

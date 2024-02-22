@@ -1,10 +1,13 @@
 #pragma once
 #include "button.h"
 
-void queue_init();
-void addToQueue(Order *o);
 
 typedef struct{
-    Order *order;
+    Order order;
     struct OrderList *next;
  }OrderList;
+
+void queue_init();
+void addToQueue(OrderList** head, Order newOrder);
+Order getOrder(OrderList* head);
+void pop(OrderList **head);
