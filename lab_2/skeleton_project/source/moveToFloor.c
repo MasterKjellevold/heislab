@@ -8,6 +8,7 @@ void orientate() {
         for(int f = 0; f <= N_FLOORS; f++) {
             if(floor == f) {return}
         }
+        elevio_motorDirection(DIRN_DOWN);
     }
 }
 
