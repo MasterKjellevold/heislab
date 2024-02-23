@@ -1,6 +1,15 @@
 #include "moveToFloor.h"
 
 
+void orientate() {
+    int floor;
+    while(1) {
+        floor = elevio_floorSensor();
+        for(int f = 0; f <= N_FLOORS; f++) {
+            if(floor == f) {return}
+        }
+    }
+}
 
 void moveToFloor(int destination) {
 
