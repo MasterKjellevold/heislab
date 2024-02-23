@@ -4,6 +4,18 @@
 int lastFloor;
 //------------
 
+void OpenCloseDoor(){
+    elevio_doorOpenLamp(1);
+    while(1){
+        while(elevio_obstruction()){}
+        sleep(3);
+        if(!elevio_obstruction()){
+            elevio_doorOpenLamp(0);
+            break;
+        }
+    }
+}
+
 void orientate() {
     int floor;
     while(1) {
@@ -45,6 +57,7 @@ void moveToFloor(int destination) {
             elevio_motorDirection(DIRN_DOWN);}
         else {
             elevio_motorDirection(DIRN_STOP);
+            OpenCloseDoor();
             printf("Arrived %d\n",destination);
             break;}
 
