@@ -1,23 +1,35 @@
 #include "moveToFloor.h"
 
+// Variables
+int lastFloor;
+//------------
 
 void orientate() {
     int floor;
     while(1) {
         floor = elevio_floorSensor();
         for(int f = 0; f <= N_FLOORS; f++) {
-            if(floor == f) {return}
+            if(floor == f) {
+                lastFloor = f;
+                return;
+                }
         }
         elevio_motorDirection(DIRN_DOWN);
     }
 }
 
-void moveToFloor(int destination) {
+void updateLastFloor(){
+    int floor = elevio_floorSensor();
+    if(floor != -1) { //Ser ut til at sensoren gir -1 mellom etasjesensorer
+        lastFloor = floor;
+    }
+}
 
-    int floor;
+void moveToFloor(int destination) {
+    printf("Moving to %d\n",destination);
     int stop_is_active;
     while(1){
-        floor = elevio_floorSensor();
+        updateLastFloor();
         stop_is_active = elevio_stopButton();
 
         //Sjekker om stoppknappen er trykket, og stopper hvis den er
@@ -27,12 +39,14 @@ void moveToFloor(int destination) {
         }
 
         //Sjekker om heisen er over, under, eller i riktig etasje, og setter motorretning
-        if(destination < floor){
+        if(destination > lastFloor){
             elevio_motorDirection(DIRN_UP);}
-        else if(destination > floor){
+        else if(destination < lastFloor){
             elevio_motorDirection(DIRN_DOWN);}
         else {
             elevio_motorDirection(DIRN_STOP);
+            printf("Arrived %d\n",destination);
             break;}
+
     }
 }
