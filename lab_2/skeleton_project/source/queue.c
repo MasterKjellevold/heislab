@@ -48,7 +48,10 @@ void addToQueue(OrderList** head, Order newOrder){
         current = current->next;
     }
     current->next = newNode;
-    OrderList * temp = current->next;
+    // OrderList * temp = current->next; //Hva gjør denne???
+
+    //Turnin on light
+    elevio_buttonLamp((newNode)->order.floor, (newNode)->order.btype, 1);
 }
 
 void pop(OrderList **head){ // delete the first element
@@ -60,6 +63,11 @@ void pop(OrderList **head){ // delete the first element
 
 
     printf("popping floor %d \n", (*(*head)).order.floor);
+
+    //Turning of light
+    elevio_buttonLamp((*head)->order.floor, (*head)->order.btype, 0);
+
+    //Removing from list
     OrderList *temp = *head;
     *head = (**head).next;
     free(temp);
@@ -69,3 +77,4 @@ Order getOrder(OrderList* head){
     Order temp = head->order;
     return temp;
 }
+
