@@ -11,30 +11,39 @@ int main(){
     printf("=== Example Program ===\n");
     printf("Press the stop button on the elevator panel to exit\n");
 
-    elevio_motorDirection(DIRN_UP);
 
     button_init();
 
-    Order test1 = {test1.floor = 2, test1.btype = BUTTON_HALL_DOWN};
-    Order test2 = {test1.floor = 1, test1.btype = BUTTON_HALL_UP};
-    Order test3 = {test1.floor = 3, test1.btype = BUTTON_HALL_DOWN};
-    Order test4 = {test1.floor = 0, test1.btype = BUTTON_HALL_DOWN};
+    // The list gets initialize here
+    OrderList * head = NULL;
+
+    Order volatile test1 = {.floor = 3, .btype = BUTTON_HALL_DOWN};
+    Order volatile test2 = {.floor = 1, .btype = BUTTON_HALL_UP};
+    Order volatile test3 = {.floor = 2, .btype = BUTTON_HALL_DOWN};
+    Order volatile test4 = {.floor = 3, .btype = BUTTON_HALL_DOWN};
+    Order volatile test5 = {.floor = 4, .btype = BUTTON_HALL_DOWN};
+    Order volatile test6 = {.floor = 5, .btype = BUTTON_HALL_UP};
+    Order volatile test7 = {.floor = 6, .btype = BUTTON_HALL_DOWN};
+    Order volatile test8 = {.floor = 7, .btype = BUTTON_HALL_DOWN};
+
     addToQueue(&head, test1);
     addToQueue(&head, test2);
     addToQueue(&head, test3);
     addToQueue(&head, test4);
-
+    addToQueue(&head, test5);
+    addToQueue(&head, test6);
+    addToQueue(&head, test7);
+    addToQueue(&head, test8);
+    orientate();
     while(1){
 
 
         // skrape data
         // loop through buttons
         // int floor = elevio_floorSensor();
-        Order firstOrder = head->order;
-        int test = firstOrder.floor;
-      
+        Order nextOrder = head->order;
+        int test = nextOrder.floor;
         moveToFloor(test);
-
         pop(&head);
 
        

@@ -1,8 +1,7 @@
 #include "queue.h"
 #include <stddef.h>
 
-// The list gets initialize here
-OrderList * head = NULL;
+
 
 /*
 OrderList *head; // peker til det første elementet
@@ -28,11 +27,13 @@ void addToQueue(Order o){
 
 void addToQueue(OrderList** head, Order newOrder){
 
+    printf("Adding floor %d to queue: ", newOrder.floor);
     //lage ny noede
     OrderList* newNode = (OrderList*)malloc(sizeof(OrderList));
     newNode->order = newOrder;
     newNode->next = NULL;
 
+    
 
     //er listen tom 
     if(*head == NULL){
@@ -47,9 +48,18 @@ void addToQueue(OrderList** head, Order newOrder){
         current = current->next;
     }
     current->next = newNode;
+    OrderList * temp = current->next;
 }
 
 void pop(OrderList **head){ // delete the first element
+
+    if (*head == NULL) { //tom liste
+        printf("List is empty. Cannot pop.\n");
+        return;
+    }
+
+
+    printf("popping floor %d \n", (*(*head)).order.floor);
     OrderList *temp = *head;
     *head = (**head).next;
     free(temp);

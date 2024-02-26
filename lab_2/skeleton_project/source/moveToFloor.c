@@ -17,17 +17,20 @@ void OpenCloseDoor(){
 }
 
 void orientate() {
+    printf("oriantating\n");
     int floor;
     while(1) {
         floor = elevio_floorSensor();
         for(int f = 0; f <= N_FLOORS; f++) {
             if(floor == f) {
                 lastFloor = f;
+                printf("orientated to floor %d \n", floor);
                 return;
                 }
         }
         elevio_motorDirection(DIRN_DOWN);
     }
+
 }
 
 void updateLastFloor(){
