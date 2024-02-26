@@ -1,6 +1,9 @@
 #include "queue.h"
 #include <stddef.h>
 
+// The list gets initialize here
+OrderList * head = NULL;
+
 /*
 OrderList *head; // peker til det første elementet
 
