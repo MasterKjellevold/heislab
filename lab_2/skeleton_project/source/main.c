@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <signal.h>
 #include <time.h>
-#include "queue.h"
+#include "moveToFloor.h"
 
 
 int main(){
@@ -18,37 +18,20 @@ int main(){
     OrderList * head = NULL;
 
     Order volatile test1 = {.floor = 3, .btype = BUTTON_HALL_DOWN};
-    Order volatile test2 = {.floor = 1, .btype = BUTTON_HALL_UP};
-    Order volatile test3 = {.floor = 2, .btype = BUTTON_HALL_DOWN};
-    Order volatile test4 = {.floor = 3, .btype = BUTTON_HALL_DOWN};
-    Order volatile test5 = {.floor = 4, .btype = BUTTON_HALL_DOWN};
-    Order volatile test6 = {.floor = 5, .btype = BUTTON_HALL_UP};
-    Order volatile test7 = {.floor = 6, .btype = BUTTON_HALL_DOWN};
-    Order volatile test8 = {.floor = 7, .btype = BUTTON_HALL_DOWN};
-
     addToQueue(&head, test1);
-    addToQueue(&head, test2);
-    addToQueue(&head, test3);
-    addToQueue(&head, test4);
-    addToQueue(&head, test5);
-    addToQueue(&head, test6);
-    addToQueue(&head, test7);
-    addToQueue(&head, test8);
     orientate();
     while(1){
 
-
-        // skrape data
-        // loop through buttons
-        // int floor = elevio_floorSensor();
-        Order nextOrder = head->order;
-        int test = nextOrder.floor;
-        moveToFloor(test);
-        pop(&head);
-
-       
-
-
+        loop_through(&head);
+        if(get_len_of_queue(head) != 0){  // dersom køen er tom, skjer det ingenting
+            // skrape data
+            // loop through buttons
+            // int floor = elevio_floorSensor();
+            Order nextOrder = head->order;
+            int nextFloor = nextOrder.floor;
+            moveToFloor(nextFloor, &head);
+            pop(&head);
+        }
 
         /*
         if(floor == 0){
@@ -58,14 +41,7 @@ int main(){
         if(floor == N_FLOORS-1){
             elevio_motorDirection(DIRN_DOWN);
         }
-        */
-        /*
-        for(int f = 0; f < N_FLOORS; f++){
-            for(int b = 0; b < N_BUTTONS; b++){
-                int btnPressed = elevio_callButton(f, b);
-                elevio_buttonLamp(f, b, btnPressed);
-            }
-        }
+        
         */
 
         if(elevio_obstruction()){

@@ -40,10 +40,12 @@ void updateLastFloor(){
     }
 }
 
-void moveToFloor(int destination) {
+void moveToFloor(int destination, OrderList ** head) {
     printf("Moving to %d\n",destination);
     int stop_is_active;
     while(1){
+
+        //loop_through(head); går gjennom alle knappene og legger til i kø
         updateLastFloor();
         stop_is_active = elevio_stopButton();
 

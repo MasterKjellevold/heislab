@@ -1,12 +1,17 @@
-#include "order.h"
+#pragma once
+#include "order.h" //includerer 
+#include "queue.h"
 
+#define button_len = N_FLOORS*3-2;
 
+int loop_through(OrderList ** head);
 void button_init();
 typedef struct{
     ButtonType buttonType;
     int isPressed;
     int floor;
     int lightIsOn;
+    int lastState;
 } Button;
 
 

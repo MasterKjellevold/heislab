@@ -1,5 +1,4 @@
 #pragma once
-#include "button.h"
 
 
 typedef struct{
@@ -11,3 +10,4 @@ void queue_init();
 void addToQueue(OrderList** head, Order newOrder);
 Order getOrder(OrderList* head);
 void pop(OrderList **head);
+int get_len_of_queue(OrderList* head);

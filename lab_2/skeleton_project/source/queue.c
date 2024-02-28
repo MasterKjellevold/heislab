@@ -1,4 +1,4 @@
-#include "queue.h"
+#include "button.h"
 #include <stddef.h>
 
 
@@ -78,3 +78,17 @@ Order getOrder(OrderList* head){
     return temp;
 }
 
+
+int get_len_of_queue(OrderList* head){
+    int len = 1;
+    if (head == NULL)
+    {
+        return 0;
+    }
+    OrderList *current = head;
+    while(current->next != NULL){
+        current = current->next;
+        len ++;
+    }
+    return len;
+}
