@@ -2,26 +2,26 @@
 #include <stdlib.h>
 #include <signal.h>
 #include <time.h>
-#include "moveToFloor.h"
-
+#include "master.h"
 
 int main(){
     elevio_init();
-    
-    printf("=== Example Program ===\n");
+
+
+    Matrix beslutnings_matrise;
+    Matrix maske_matrise;
+    init_master(&beslutnings_matrise, &maske_matrise);
     printf("Press the stop button on the elevator panel to exit\n");
-
-
     button_init();
 
     // The list gets initialize here
     OrderList * head = NULL;
 
-    Order volatile test1 = {.floor = 3, .btype = BUTTON_HALL_DOWN};
-    addToQueue(&head, test1);
     orientate();
     while(1){
-
+        Order test = {.floor = 6, .btype = BUTTON_CAB};
+        what_to_do(test, 0, 0, 1, 0, &beslutnings_matrise, &maske_matrise); //test
+        /*
         loop_through(&head);
         if(get_len_of_queue(head) != 0){  // dersom køen er tom, skjer det ingenting
             // skrape data

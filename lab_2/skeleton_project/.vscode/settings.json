@@ -2,6 +2,11 @@
     "files.associations": {
         "stdio.h": "c",
         "queue.h": "c",
-        "elevio.h": "c"
+        "elevio.h": "c",
+        "master.h": "c",
+        "array": "c",
+        "string": "c",
+        "string_view": "c",
+        "time.h": "c"
     }
 }
