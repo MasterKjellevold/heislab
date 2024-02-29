@@ -4,7 +4,7 @@
 int lastFloor;
 //------------
 
-int lastFloor() {
+int getLastFloor() {
     return lastFloor;
 }
 
