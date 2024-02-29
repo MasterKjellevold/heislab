@@ -4,6 +4,10 @@
 int lastFloor;
 //------------
 
+int lastFloor() {
+    return lastFloor;
+}
+
 void OpenCloseDoor(){
     elevio_doorOpenLamp(1);
     while(1){
