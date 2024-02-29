@@ -5,6 +5,7 @@ int lastFloor;
 //------------
 
 int getLastFloor() {
+    updateLastFloor();
     return lastFloor;
 }
 
@@ -29,6 +30,7 @@ void orientate() {
             if(floor == f) {
                 lastFloor = f;
                 printf("orientated to floor %d \n", floor);
+                elevio_motorDirection(DIRN_STOP);
                 return;
                 }
         }

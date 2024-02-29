@@ -1,8 +1,8 @@
 #include "moveToFloor.h"
 
 
-#define ROW_NUM 6
-#define COL_NUM 5
+#define ROW_NUM 5
+#define COL_NUM 7
 
 typedef struct{
     int rows;
@@ -12,7 +12,8 @@ typedef struct{
 
 
 void create_beslutningsmatrise(Matrix * m);
-Matrix create_mask_matrix(Matrix * m);
-void what_to_do(Order nextOrder, int lastFloor, int initializing, int stop, int obstruction, Matrix * bm, Matrix * mm);
+void create_mask_matrix(Matrix * m);
+void what_to_do(Order nextOrder, int lastFloor, int stop, int doorOpen, Matrix * bm, Matrix * mm, OrderList ** head);
 void init_master(Matrix * bm, Matrix * mm);
 void printMatrix(Matrix *matrix);
+void openDoor(OrderList ** head);

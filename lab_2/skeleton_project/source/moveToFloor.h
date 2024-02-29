@@ -6,4 +6,4 @@
 void updateLastFloor();
 void moveToFloor(int destination, OrderList ** head);
 void orientate();
-int lastFloor();
+int getLastFloor();

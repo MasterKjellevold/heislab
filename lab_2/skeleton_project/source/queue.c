@@ -92,3 +92,9 @@ int get_len_of_queue(OrderList* head){
     }
     return len;
 }
+
+void freeList(OrderList **head) {
+    while(*head != NULL) {
+        pop(head);
+    }
+}

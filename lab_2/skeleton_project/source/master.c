@@ -24,11 +24,15 @@ void create_beslutningsmatrise(Matrix * m){
     }
 
     
-    m->data[4][0] = 1;
+    m->data[3][0] = 1;
+    m->data[0][1] = 1;  m->data[0][2] = 1;
+    m->data[1][3] = 1;  m->data[1][4] = 1;
+    m->data[2][5] = 1;  m->data[2][6] = 1;
+    m->data[4][2] = 1;  m->data[4][4] = 1;  m->data[4][6] = 1;
     
 }
 
-Matrix create_mask_matrix(Matrix * m){
+void create_mask_matrix(Matrix * m){
     m->rows = ROW_NUM;
     m->cols = COL_NUM;
     
@@ -41,7 +45,22 @@ Matrix create_mask_matrix(Matrix * m){
     }
 
     
-    m->data[4][0] = 1;
+    m->data[3][0] = 1;
+    m->data[3][1] = 1;
+    m->data[3][2] = 1;
+    m->data[3][3] = 1;
+    m->data[3][4] = 1;
+    m->data[3][5] = 1;
+    m->data[3][6] = 1;
+
+    m->data[0][1] = 1;  m->data[0][2] = 1;
+    m->data[1][3] = 1;  m->data[1][4] = 1;
+    m->data[2][5] = 1;  m->data[2][6] = 1;
+    m->data[4][2] = 1;  m->data[4][4] = 1;  m->data[4][6] = 1;
+
+    m->data[4][1] = 1;
+    m->data[4][3] = 1;
+    m->data[4][5] = 1;
 }
 
 
@@ -51,13 +70,14 @@ void init_master(Matrix * bm, Matrix * mm){
     create_beslutningsmatrise(bm);
     create_mask_matrix(mm);
     printMatrix(bm);
+    printMatrix(mm);
 
 }
 
 
 
 
-void what_to_do(Order nextOrder, int lastFloor, int initializing, int stop, int obstruction, Matrix * bm, Matrix * mm){
+void what_to_do(Order nextOrder, int lastFloor, int stop, int doorOpen, Matrix * bm, Matrix * mm, OrderList ** head){
 
     int dir = nextOrder.floor-lastFloor;
     int vil_opp, vil_ned, vil_bli;
@@ -75,23 +95,93 @@ void what_to_do(Order nextOrder, int lastFloor, int initializing, int stop, int 
         vil_bli = 0;
     }
 
-    int data[6] = {vil_opp, vil_ned, vil_bli, initializing, stop, obstruction};
+    int data[5] = {vil_opp, vil_ned, vil_bli, stop, doorOpen};
+    int result[7] = {0, 0, 0, 0, 0, 0, 0};
 
-    int result[6] = {0, 0, 0, 0, 0, 0};
-    for (int j = 0; j < COL_NUM; j++)
-    {   
-        int sum = 0;
-        for (int i = 0; i < ROW_NUM; i++)
+
+    // oge matrix
+    int og_matrix[ROW_NUM][COL_NUM];
+    for (int i = 0; i < COL_NUM; i++)
+    {
+        for (int j = 0; j < ROW_NUM; j++)
         {
-            sum += bm->data[i][j]*mm->data[i][j]*data[i];
+            og_matrix[j][i] = data[j] && mm->data[j][i];
         }
-        result[j] = sum;
         
     }
+    
+
+    // sammenligne matrix
+    for (int col = 0; col< COL_NUM; col++)
+    {
+        int like = 1;
+        for (int row = 0; row < ROW_NUM; row++)
+        {
+            if(og_matrix[row][col] != bm->data[row][col]) like = 0;
+        }
+        
+        result[col] = like;
+    }
+    
+
 
     if(result[0] == 1){ //stop
+        freeList(head);
         printf("stooop \n");
+        elevio_motorDirection(DIRN_STOP);
         exit(0);
     }
+
+
+
+    if(result[1] == 1){
+        elevio_motorDirection(DIRN_UP);
+    }
+    if(result[2] == 1){
+        elevio_motorDirection(DIRN_STOP);
+    }
+    if(result[3] == 1){
+        elevio_motorDirection(DIRN_DOWN);
+    }
+    if(result[4] == 1){
+        elevio_motorDirection(DIRN_STOP);
+    }
+    if(result[5] == 1){
+        elevio_motorDirection(DIRN_STOP);
+        pop(head);
+        openDoor(head);
+
+    }
+    if(result[6] == 1){
+        elevio_motorDirection(DIRN_STOP);
+    }
+    
+}
+
+void openDoor(OrderList ** head){
+    printf("opening door");
+    clock_t before = clock();
+    int msec = 0;
+    int timer = 3000;
+    while(msec < timer){
+        if(elevio_obstruction()){
+            printf("reset");
+            before = clock();
+        }
+
+        //Handle orders and stop button
+        loop_through(head);
+        if(elevio_stopButton()){
+            elevio_motorDirection(DIRN_STOP);
+            freeList(&head);
+            break;
+        }
+
+
+        clock_t diff = clock() - before;
+        msec = (diff * 1000/ CLOCKS_PER_SEC);
+        printf("msec: %d timer: %d\n", msec, timer);
+    }
+    printf("closing door");
     
 }
