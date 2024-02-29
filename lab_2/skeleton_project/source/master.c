@@ -71,21 +71,43 @@ void init_master(Matrix * bm, Matrix * mm){
 
 void what_to_do(Order nextOrder, int lastFloor, int stop, int doorOpen, Matrix * bm, Matrix * mm, OrderList ** head){
 
+    int isBetween;
+    if(elevio_floorSensor() == -1) {
+        isBetween = 1;
+    }else {
+        isBetween = 0;
+    }
     int dir = nextOrder.floor-lastFloor;
     int vil_opp, vil_ned, vil_bli;
-    if(dir > 0){
-        vil_opp = 1;
-        vil_ned = 0;
-        vil_bli = 0;
-    }else if(dir == 0){
-        vil_opp = 0;
-        vil_ned = 0;
-        vil_bli = 1;
-    }else if(dir < 0){
-        vil_opp = 0;
-        vil_ned = 1;
-        vil_bli = 0;
+    
+    if(!isBetween) {
+        if(dir > 0){
+            vil_opp = 1;
+            vil_ned = 0;
+            vil_bli = 0;
+        }else if(dir == 0){
+            vil_opp = 0;
+            vil_ned = 0;
+            vil_bli = 1;
+        }else if(dir < 0){
+            vil_opp = 0;
+            vil_ned = 1;
+            vil_bli = 0;
+        }
+    }else {
+        if(dir > 0 || (dir == 0 && (getLastDir() == -1) )){
+            printf("vil opp: -1\n");
+            vil_opp = 1;
+            vil_ned = 0;
+            vil_bli = 0;
+        }else if(dir < 0 || (dir == 0 && (getLastDir() == 1) )){
+            printf("vil ned: 1\n");
+            vil_opp = 0;
+            vil_ned = 1;
+            vil_bli = 0;
+        }
     }
+
 
     int data[5] = {vil_opp, vil_ned, vil_bli, stop, doorOpen};
     int result[7] = {0, 0, 0, 0, 0, 0, 0};
@@ -118,29 +140,32 @@ void what_to_do(Order nextOrder, int lastFloor, int stop, int doorOpen, Matrix *
 
 
     if(result[0] == 1){ //stop
-        freeList(head);
-        printf("stooop \n");
-        elevio_motorDirection(DIRN_STOP);
-        exit(0);
+        // freeList(head);
+        // printf("stooop \n");
+        // elevio_motorDirection(DIRN_STOP);
+        // exit(0);
+        handleStop(head);
+        return;
     }
 
 
 
     if(result[1] == 1){
         elevio_motorDirection(DIRN_UP);
+        updateLastDir(DIRN_UP, elevio_floorSensor());
     }
     if(result[2] == 1){
         elevio_motorDirection(DIRN_STOP);
     }
     if(result[3] == 1){
         elevio_motorDirection(DIRN_DOWN);
+        updateLastDir(DIRN_DOWN, elevio_floorSensor());
     }
     if(result[4] == 1){
         elevio_motorDirection(DIRN_STOP);
     }
     if(result[5] == 1){
         elevio_motorDirection(DIRN_STOP);
-        // pop(head);
         removeFloorOrders(head, nextOrder.floor);
         openDoor(head);
 
@@ -166,9 +191,12 @@ void openDoor(OrderList ** head){
         //Handle orders and stop button
         loop_through(head);
         if(elevio_stopButton()){
-            elevio_motorDirection(DIRN_STOP);
-            freeList(&head);
-            break;
+            elevio_doorOpenLamp(1);
+            before = clock();
+            handleStop(head);
+            // elevio_motorDirection(DIRN_STOP);
+            // freeList(&head);
+            // break;
         }
 
 
@@ -179,4 +207,15 @@ void openDoor(OrderList ** head){
     printf("closing door\n");
     elevio_doorOpenLamp(0);
     
+}
+
+
+void handleStop(OrderList ** head) {
+    printf("STOP\n");
+    freeList(head);
+    elevio_motorDirection(DIRN_STOP);
+    elevio_stopLamp(1);
+    while(elevio_stopButton()) {
+    }
+    elevio_stopLamp(0);
 }

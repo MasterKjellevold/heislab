@@ -28,10 +28,11 @@ int main(){
             what_to_do(head->order, getLastFloor(), elevio_stopButton(), 0, &beslutnings_matrise, &maske_matrise, &head); //test
         }else{
             if(elevio_stopButton()){
-                elevio_motorDirection(DIRN_STOP);
-                freeList(&head);
-            break;
-        }
+                // elevio_motorDirection(DIRN_STOP);
+                // freeList(&head);
+                handleStop(&head);
+                // break;
+            }
         }
         
         

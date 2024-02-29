@@ -17,3 +17,4 @@ void what_to_do(Order nextOrder, int lastFloor, int stop, int doorOpen, Matrix *
 void init_master(Matrix * bm, Matrix * mm);
 void printMatrix(Matrix *matrix);
 void openDoor(OrderList ** head);
+void handleStop(OrderList ** head);

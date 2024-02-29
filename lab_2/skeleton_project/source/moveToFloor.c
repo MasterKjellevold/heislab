@@ -2,6 +2,7 @@
 
 // Variables
 int lastFloor;
+MotorDirection lastDir;
 //------------
 
 int getLastFloor() {
@@ -9,16 +10,20 @@ int getLastFloor() {
     return lastFloor;
 }
 
-void OpenCloseDoor(){
-    elevio_doorOpenLamp(1);
-    while(1){
-        while(elevio_obstruction()){}
-        sleep(3);
-        if(!elevio_obstruction()){
-            elevio_doorOpenLamp(0);
-            break;
-        }
+MotorDirection getLastDir() {
+    return lastDir;
+}
+
+void updateLastFloor(){
+    int floor = elevio_floorSensor();
+    if(floor != -1) { //Ser ut til at sensoren gir -1 mellom etasjesensorer
+        lastFloor = floor;
     }
+}
+
+void updateLastDir(MotorDirection newDir, int currentFloor) {
+    if(!(currentFloor == -1))
+    lastDir = newDir;
 }
 
 void orientate() {
@@ -35,17 +40,26 @@ void orientate() {
                 }
         }
         elevio_motorDirection(DIRN_DOWN);
+        updateLastDir(DIRN_DOWN, elevio_floorSensor());
     }
 
 }
 
-void updateLastFloor(){
-    int floor = elevio_floorSensor();
-    if(floor != -1) { //Ser ut til at sensoren gir -1 mellom etasjesensorer
-        lastFloor = floor;
+
+//Aldri bruk denne. Den er dum
+void OpenCloseDoor(){
+    elevio_doorOpenLamp(1);
+    while(1){
+        while(elevio_obstruction()){}
+        sleep(3);
+        if(!elevio_obstruction()){
+            elevio_doorOpenLamp(0);
+            break;
+        }
     }
 }
 
+//Denne skal ikke brukes
 void moveToFloor(int destination, OrderList ** head) {
     printf("Moving to %d\n",destination);
     int stop_is_active;
