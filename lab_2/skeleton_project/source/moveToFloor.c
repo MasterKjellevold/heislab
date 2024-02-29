@@ -22,8 +22,9 @@ void updateLastFloor(){
 }
 
 void updateLastDir(MotorDirection newDir, int currentFloor) {
-    if(!(currentFloor == -1))
-    lastDir = newDir;
+    if(!(currentFloor == -1)){
+        lastDir = newDir;
+    }
 }
 
 void orientate() {
@@ -43,48 +44,4 @@ void orientate() {
         updateLastDir(DIRN_DOWN, elevio_floorSensor());
     }
 
-}
-
-
-//Aldri bruk denne. Den er dum
-void OpenCloseDoor(){
-    elevio_doorOpenLamp(1);
-    while(1){
-        while(elevio_obstruction()){}
-        sleep(3);
-        if(!elevio_obstruction()){
-            elevio_doorOpenLamp(0);
-            break;
-        }
-    }
-}
-
-//Denne skal ikke brukes
-void moveToFloor(int destination, OrderList ** head) {
-    printf("Moving to %d\n",destination);
-    int stop_is_active;
-    while(1){
-
-        //loop_through(head); går gjennom alle knappene og legger til i kø
-        updateLastFloor();
-        stop_is_active = elevio_stopButton();
-
-        //Sjekker om stoppknappen er trykket, og stopper hvis den er
-        if(stop_is_active) {
-            elevio_motorDirection(DIRN_STOP);
-            break;
-        }
-
-        //Sjekker om heisen er over, under, eller i riktig etasje, og setter motorretning
-        if(destination > lastFloor){
-            elevio_motorDirection(DIRN_UP);}
-        else if(destination < lastFloor){
-            elevio_motorDirection(DIRN_DOWN);}
-        else {
-            elevio_motorDirection(DIRN_STOP);
-            OpenCloseDoor();
-            printf("Arrived %d\n",destination);
-            break;}
-
-    }
 }

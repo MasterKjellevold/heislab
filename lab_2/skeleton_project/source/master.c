@@ -1,5 +1,5 @@
 #include "master.h"
-
+#include "time.h"
 
 void printMatrix(Matrix *matrix) {
     for (int i = 0; i < matrix->rows; i++) {
@@ -55,9 +55,7 @@ void create_mask_matrix(Matrix * m){
     //-----------------------------------------------------------------------------------------------------------------------------------------
 }
 
-
-
-void init_master(Matrix * bm, Matrix * mm){
+void master_init(Matrix * bm, Matrix * mm){
 
     create_beslutningsmatrise(bm);
     create_mask_matrix(mm);
@@ -65,9 +63,6 @@ void init_master(Matrix * bm, Matrix * mm){
     printMatrix(mm);
 
 }
-
-
-
 
 void what_to_do(Order nextOrder, int lastFloor, int stop, int doorOpen, Matrix * bm, Matrix * mm, OrderList ** head){
 
@@ -189,7 +184,7 @@ void openDoor(OrderList ** head){
         }
 
         //Handle orders and stop button
-        loop_through(head);
+        loopThroughButtons(head);
         if(elevio_stopButton()){
             elevio_doorOpenLamp(1);
             before = clock();
@@ -208,7 +203,6 @@ void openDoor(OrderList ** head){
     elevio_doorOpenLamp(0);
     
 }
-
 
 void handleStop(OrderList ** head) {
     printf("STOP\n");

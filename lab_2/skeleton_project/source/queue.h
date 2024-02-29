@@ -1,4 +1,10 @@
 #pragma once
+#include "driver/elevio.h"
+
+typedef struct {
+    int floor;
+    ButtonType btype;
+} Order;
 
 
 typedef struct{
@@ -6,11 +12,10 @@ typedef struct{
     struct OrderList *next;
  }OrderList;
 
-void queue_init();
-void addToQueue(OrderList** head, Order newOrder);
+void addOrderToQueue(OrderList** head, Order newOrder);
 void pop(OrderList **head);
 void freeList(OrderList **head);
 void removeFloorOrders(OrderList **head, int floor);
-
-Order getOrder(OrderList* head);
+void loopThroughButtons(OrderList ** head);
 int get_len_of_queue(OrderList* head);
+void handleNewOrder(OrderList **head, Order newOrder);

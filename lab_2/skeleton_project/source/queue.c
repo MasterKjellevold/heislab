@@ -1,31 +1,8 @@
-#include "button.h"
 #include <stddef.h>
+#include "queue.h"
 
 
-
-/*
-OrderList *head; // peker til det første elementet
-
-void queue_init(){
-    Order headNode = {headNode.floor = 0, headNode.btype = BUTTON_CAB}; // lager en vilkårlig head node.
-    OrderList *null_ptr = NULL;
-    OrderList objectives = {objectives.order = headNode, objectives.next=null_ptr};
-    head = &objectives; // setter head peker til den initialiserte objective
-}
-
-void addToQueue(Order o){ 
-    OrderList* new = (OrderList*)malloc(sizeof(OrderList));
-    new->next = NULL;
-    new->order = o; //tar inn en ny order, lager en peker til struct orderlist
-    OrderList* p = head;
-    while(p != NULL){ //travarserer gjennom lista
-        p = p->next;
-    }
-    *p = *new; //det siste elementet peker nå til det nye.
-}
-*/
-
-void addToQueue(OrderList** head, Order newOrder){
+void addOrderToQueue(OrderList** head, Order newOrder){
 
     printf("Adding floor %d to queue\n", newOrder.floor);
     //lage ny noede
@@ -43,16 +20,14 @@ void addToQueue(OrderList** head, Order newOrder){
     }
 
 
-    //traverse
+    //traverserer gjennom listen
     OrderList *current = *head;
     while(current->next != NULL){
         current = current->next;
     }
     current->next = newNode;
-    // OrderList * temp = current->next; //Hva gjør denne???
 
-    //Turnin on light
-    // elevio_buttonLamp((newNode)->order.floor, (newNode)->order.btype, 1);
+    //skrur på lys
     elevio_buttonLamp(newOrder.floor, newOrder.btype, 1);
 }
 
@@ -74,12 +49,6 @@ void pop(OrderList **head){ // delete the first element
     *head = (**head).next;
     free(temp);
 }
-
-Order getOrder(OrderList* head){
-    Order temp = head->order;
-    return temp;
-}
-
 
 int get_len_of_queue(OrderList* head){
     int len = 1;
@@ -134,10 +103,52 @@ void removeFloorOrders(OrderList **head, int floor) {
         }
     }
 
-    // skjekker head en gang til når (current == NULL)
+    // sjekker head en gang til når (current == NULL)
     if( ((*head)->order.floor) == floor) {
             printf("Popping head when current==NULL\n");
             pop(head);
         }
     
+}
+
+void loopThroughButtons(OrderList ** head){
+
+    // løper gjennom alle knappene
+    for(int f = 0; f < N_FLOORS; f++){
+        for(int b = 0; b < N_BUTTONS; b++){
+            int btnPressed = elevio_callButton(f, b);
+            if (btnPressed) { // dersom en knapp er trykt -> ny ordre
+                Order newOrder = {.floor = f, .btype = b};
+                handleNewOrder(head, newOrder); 
+            }
+            
+        }
+    }
+}
+
+void handleNewOrder(OrderList **head, Order newOrder) {
+
+    //Checking if the order list is empty, and adding ordre directly
+    if(*head == NULL) {
+        addOrderToQueue(head, newOrder);
+        return;
+    }
+
+    //Checking if newOrder is already in the order list
+    int newOrderNotInList = 1;
+    OrderList *current = *head;
+    while(current != NULL) {
+        if( (current->order.floor == newOrder.floor) && (current->order.btype == newOrder.btype) ) {
+            newOrderNotInList = 0;
+            break;
+        }
+        else {
+            current = current->next;
+        }
+    }
+    
+    //Adding newOrder to the order list if it is not there jet
+    if(newOrderNotInList) {
+        addOrderToQueue(head, newOrder);
+    }
 }
