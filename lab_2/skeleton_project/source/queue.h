@@ -8,7 +8,9 @@ typedef struct{
 
 void queue_init();
 void addToQueue(OrderList** head, Order newOrder);
-Order getOrder(OrderList* head);
 void pop(OrderList **head);
-int get_len_of_queue(OrderList* head);
 void freeList(OrderList **head);
+void removeFloorOrders(OrderList **head, int floor);
+
+Order getOrder(OrderList* head);
+int get_len_of_queue(OrderList* head);

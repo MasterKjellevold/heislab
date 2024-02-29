@@ -15,6 +15,7 @@ void create_beslutningsmatrise(Matrix * m){
     m->rows = ROW_NUM;
     m->cols = COL_NUM;
     
+    //Setter alle elementer i matirsen til 0
     for (int i = 0; i < ROW_NUM; i++)
     {
         for (int j = 0; j < COL_NUM; j++)
@@ -23,19 +24,20 @@ void create_beslutningsmatrise(Matrix * m){
             }
     }
 
-    
+    //Definerer beslutningsmatrisen (se excel-ark)------------------------------------------------------------------------
+                        m->data[0][1] = 1;  m->data[0][2] = 1;
+                                                                m->data[1][3] = 1;  m->data[1][4] = 1;
+                                                                                                        m->data[2][5] = 1;  m->data[2][6] = 1;
     m->data[3][0] = 1;
-    m->data[0][1] = 1;  m->data[0][2] = 1;
-    m->data[1][3] = 1;  m->data[1][4] = 1;
-    m->data[2][5] = 1;  m->data[2][6] = 1;
-    m->data[4][2] = 1;  m->data[4][4] = 1;  m->data[4][6] = 1;
-    
+                                            m->data[4][2] = 1;                      m->data[4][4] = 1;                      m->data[4][6] = 1;
+    //------------------------------------------------------------------------------------------------------
 }
 
 void create_mask_matrix(Matrix * m){
     m->rows = ROW_NUM;
     m->cols = COL_NUM;
     
+    //Setter alle element i matrisen til 0
     for (int i = 0; i < ROW_NUM; i++)
     {
         for (int j = 0; j < COL_NUM; j++)
@@ -44,23 +46,13 @@ void create_mask_matrix(Matrix * m){
             }
     }
 
-    
-    m->data[3][0] = 1;
-    m->data[3][1] = 1;
-    m->data[3][2] = 1;
-    m->data[3][3] = 1;
-    m->data[3][4] = 1;
-    m->data[3][5] = 1;
-    m->data[3][6] = 1;
-
-    m->data[0][1] = 1;  m->data[0][2] = 1;
-    m->data[1][3] = 1;  m->data[1][4] = 1;
-    m->data[2][5] = 1;  m->data[2][6] = 1;
-    m->data[4][2] = 1;  m->data[4][4] = 1;  m->data[4][6] = 1;
-
-    m->data[4][1] = 1;
-    m->data[4][3] = 1;
-    m->data[4][5] = 1;
+    //Definerer maskematrisen (se excel-ark)--------------------------------------------------------------------------------------------------
+                        m->data[0][1] = 1;  m->data[0][2] = 1;
+                                                                m->data[1][3] = 1;  m->data[1][4] = 1;
+                                                                                                        m->data[2][5] = 1;  m->data[2][6] = 1;
+    m->data[3][0] = 1;  m->data[3][1] = 1;  m->data[3][2] = 1;  m->data[3][3] = 1;  m->data[3][4] = 1;  m->data[3][5] = 1;  m->data[3][6] = 1;
+                        m->data[4][1] = 1;  m->data[4][2] = 1;  m->data[4][3] = 1;  m->data[4][4] = 1;  m->data[4][5] = 1;  m->data[4][6] = 1;
+    //-----------------------------------------------------------------------------------------------------------------------------------------
 }
 
 
@@ -148,7 +140,8 @@ void what_to_do(Order nextOrder, int lastFloor, int stop, int doorOpen, Matrix *
     }
     if(result[5] == 1){
         elevio_motorDirection(DIRN_STOP);
-        pop(head);
+        // pop(head);
+        removeFloorOrders(head, nextOrder.floor);
         openDoor(head);
 
     }
@@ -159,13 +152,14 @@ void what_to_do(Order nextOrder, int lastFloor, int stop, int doorOpen, Matrix *
 }
 
 void openDoor(OrderList ** head){
-    printf("opening door");
+    elevio_doorOpenLamp(1);
+    printf("opening door\n");
     clock_t before = clock();
     int msec = 0;
-    int timer = 3000;
+    int timer = 1000;
     while(msec < timer){
         if(elevio_obstruction()){
-            printf("reset");
+            printf("reseting time\n");
             before = clock();
         }
 
@@ -180,8 +174,9 @@ void openDoor(OrderList ** head){
 
         clock_t diff = clock() - before;
         msec = (diff * 1000/ CLOCKS_PER_SEC);
-        printf("msec: %d timer: %d\n", msec, timer);
+        // printf("msec: %d timer: %d\n", msec, timer);
     }
-    printf("closing door");
+    printf("closing door\n");
+    elevio_doorOpenLamp(0);
     
 }

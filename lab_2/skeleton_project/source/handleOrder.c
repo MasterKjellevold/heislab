@@ -5,7 +5,6 @@ void handleOrdre(OrderList **head, Order newOrder) {
 
     //Checking if the order list is empty, and adding ordre directly
     if(*head == NULL) {
-        printf("første gang\n");
         addToQueue(head, newOrder);
         return;
     }
@@ -25,7 +24,6 @@ void handleOrdre(OrderList **head, Order newOrder) {
     
     //Adding newOrder to the order list if it is not there jet
     if(newOrderNotInList) {
-        printf("andre gang\n");
         addToQueue(head, newOrder);
     }
 }

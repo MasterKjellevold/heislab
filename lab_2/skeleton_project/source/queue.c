@@ -27,7 +27,7 @@ void addToQueue(Order o){
 
 void addToQueue(OrderList** head, Order newOrder){
 
-    printf("Adding floor %d to queue: ", newOrder.floor);
+    printf("Adding floor %d to queue\n", newOrder.floor);
     //lage ny noede
     OrderList* newNode = (OrderList*)malloc(sizeof(OrderList));
     newNode->order = newOrder;
@@ -38,6 +38,7 @@ void addToQueue(OrderList** head, Order newOrder){
     //er listen tom 
     if(*head == NULL){
         *head = newNode;
+        elevio_buttonLamp(newOrder.floor, newOrder.btype, 1); // skrur på lyset
         return; //ferdig
     }
 
@@ -51,7 +52,8 @@ void addToQueue(OrderList** head, Order newOrder){
     // OrderList * temp = current->next; //Hva gjør denne???
 
     //Turnin on light
-    elevio_buttonLamp((newNode)->order.floor, (newNode)->order.btype, 1);
+    // elevio_buttonLamp((newNode)->order.floor, (newNode)->order.btype, 1);
+    elevio_buttonLamp(newOrder.floor, newOrder.btype, 1);
 }
 
 void pop(OrderList **head){ // delete the first element
@@ -62,7 +64,7 @@ void pop(OrderList **head){ // delete the first element
     }
 
 
-    printf("popping floor %d \n", (*(*head)).order.floor);
+    // printf("popping floor %d \n", (*(*head)).order.floor);
 
     //Turning of light
     elevio_buttonLamp((*head)->order.floor, (*head)->order.btype, 0);
@@ -97,4 +99,45 @@ void freeList(OrderList **head) {
     while(*head != NULL) {
         pop(head);
     }
+}
+
+void removeFloorOrders(OrderList **head, int floor) {
+    
+    OrderList *prev = *head;
+    OrderList *current = prev->next;
+
+    while(current != NULL) {
+
+        //Sjekker om head er lik, og popper hvis den er
+        if( ((*head)->order.floor) == floor) {
+            prev = prev->next;
+            current = current->next;
+            printf("Popping head\n");
+            pop(head);
+            continue;
+        }
+
+        //Skjekker om order er neste element er lik order, og fjerner hvis den er
+        if( (current->order.floor) == floor) {
+
+            OrderList *temp = current;
+            prev->next = current->next;
+            current = current->next;
+            printf("Removing from middle\n");
+            elevio_buttonLamp(temp->order.floor, temp->order.btype, 0);
+            free(temp);
+
+        }
+        else {
+            prev = prev->next;
+            current = current->next;
+        }
+    }
+
+    // skjekker head en gang til når (current == NULL)
+    if( ((*head)->order.floor) == floor) {
+            printf("Popping head when current==NULL\n");
+            pop(head);
+        }
+    
 }
