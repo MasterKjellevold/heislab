@@ -4,7 +4,7 @@
 
 void addOrderToQueue(OrderList** head, Order newOrder){
 
-    printf("Adding floor %d to queue\n", newOrder.floor);
+    //printf("Adding floor %d to queue\n", newOrder.floor);
     //lage ny noede
     OrderList* newNode = (OrderList*)malloc(sizeof(OrderList));
     newNode->order = newOrder;
@@ -31,10 +31,24 @@ void addOrderToQueue(OrderList** head, Order newOrder){
     elevio_buttonLamp(newOrder.floor, newOrder.btype, 1);
 }
 
+void addOrderFirstToQueue(OrderList** head, Order newOrder) {
+    //printf("Adding floor %d to queue\n", newOrder.floor);
+    //lage ny noede
+    OrderList* newNode = (OrderList*)malloc(sizeof(OrderList));
+    newNode->order = newOrder;
+    newNode->next = *head;
+
+    *head = newNode;
+
+    //skrur på lys
+    elevio_buttonLamp(newOrder.floor, newOrder.btype, 1);
+
+}
+
 void pop(OrderList **head){ // delete the first element
 
     if (*head == NULL) { //tom liste
-        printf("List is empty. Cannot pop.\n");
+       // printf("List is empty. Cannot pop.\n");
         return;
     }
 
@@ -70,7 +84,7 @@ void freeList(OrderList **head) {
     }
 }
 
-void removeFloorOrders(OrderList **head, int floor) {
+void removeFloorOrders(OrderList **head, int floor) { //Fjerner alle bestillinger tilhørende parameteren floor
     
     OrderList *prev = *head;
     OrderList *current = prev->next;
@@ -81,7 +95,7 @@ void removeFloorOrders(OrderList **head, int floor) {
         if( ((*head)->order.floor) == floor) {
             prev = prev->next;
             current = current->next;
-            printf("Popping head\n");
+           // printf("Popping head\n");
             pop(head);
             continue;
         }
@@ -92,7 +106,7 @@ void removeFloorOrders(OrderList **head, int floor) {
             OrderList *temp = current;
             prev->next = current->next;
             current = current->next;
-            printf("Removing from middle\n");
+            //printf("Removing from middle\n");
             elevio_buttonLamp(temp->order.floor, temp->order.btype, 0);
             free(temp);
 
@@ -105,7 +119,7 @@ void removeFloorOrders(OrderList **head, int floor) {
 
     // sjekker head en gang til når (current == NULL)
     if( ((*head)->order.floor) == floor) {
-            printf("Popping head when current==NULL\n");
+            //printf("Popping head when current==NULL\n");
             pop(head);
         }
     
@@ -149,6 +163,39 @@ void handleNewOrder(OrderList **head, Order newOrder) {
     
     //Adding newOrder to the order list if it is not there jet
     if(newOrderNotInList) {
+
+
+        if (prioritize(head, newOrder))
+        {
+            addOrderFirstToQueue(head, newOrder);
+            return;
+        }
+        
         addOrderToQueue(head, newOrder);
     }
+}
+
+
+int prioritize(OrderList ** head, Order newOrder){
+
+    int currentOrderFloor = (*head)->order.floor;
+
+    if(newOrder.btype == BUTTON_HALL_UP){ // ny ordre skal opp
+        if( (currentOrderFloor > newOrder.floor) && (getLastFloor() < newOrder.floor)) {
+            return 1;
+        }
+    }
+    if(newOrder.btype == BUTTON_HALL_DOWN) {
+        if( (currentOrderFloor < newOrder.floor) && (getLastFloor() > newOrder.floor)) {
+            return 1;
+        }
+    }
+    
+    if(newOrder.btype == BUTTON_CAB) {
+        if( ((*head)->order.floor > newOrder.floor && getLastFloor() < newOrder.floor) || ((*head)->order.floor < newOrder.floor && getLastFloor() > newOrder.floor) ) {
+            return 1;
+        }
+    }
+    
+   return 0;
 }

@@ -91,12 +91,10 @@ void what_to_do(Order nextOrder, int lastFloor, int stop, int doorOpen, Matrix *
         }
     }else {
         if(dir > 0 || (dir == 0 && (getLastDir() == -1) )){
-            printf("vil opp: -1\n");
             vil_opp = 1;
             vil_ned = 0;
             vil_bli = 0;
         }else if(dir < 0 || (dir == 0 && (getLastDir() == 1) )){
-            printf("vil ned: 1\n");
             vil_opp = 0;
             vil_ned = 1;
             vil_bli = 0;
@@ -135,10 +133,6 @@ void what_to_do(Order nextOrder, int lastFloor, int stop, int doorOpen, Matrix *
 
 
     if(result[0] == 1){ //stop
-        // freeList(head);
-        // printf("stooop \n");
-        // elevio_motorDirection(DIRN_STOP);
-        // exit(0);
         handleStop(head);
         return;
     }
@@ -163,6 +157,7 @@ void what_to_do(Order nextOrder, int lastFloor, int stop, int doorOpen, Matrix *
         elevio_motorDirection(DIRN_STOP);
         removeFloorOrders(head, nextOrder.floor);
         openDoor(head);
+        
 
     }
     if(result[6] == 1){
@@ -173,13 +168,13 @@ void what_to_do(Order nextOrder, int lastFloor, int stop, int doorOpen, Matrix *
 
 void openDoor(OrderList ** head){
     elevio_doorOpenLamp(1);
-    printf("opening door\n");
+    //printf("opening door\n");
     clock_t before = clock();
     int msec = 0;
-    int timer = 1000;
+    int timer = 3000;
     while(msec < timer){
         if(elevio_obstruction()){
-            printf("reseting time\n");
+            //printf("reseting time\n");
             before = clock();
         }
 
@@ -196,10 +191,10 @@ void openDoor(OrderList ** head){
 
 
         clock_t diff = clock() - before;
-        msec = (diff * 1000/ CLOCKS_PER_SEC);
+        msec = (diff * 2000/ CLOCKS_PER_SEC);
         // printf("msec: %d timer: %d\n", msec, timer);
     }
-    printf("closing door\n");
+
     elevio_doorOpenLamp(0);
     
 }
@@ -209,7 +204,17 @@ void handleStop(OrderList ** head) {
     freeList(head);
     elevio_motorDirection(DIRN_STOP);
     elevio_stopLamp(1);
+
+    if(elevio_floorSensor() != -1) {
+        elevio_doorOpenLamp(1);
+    }
+
     while(elevio_stopButton()) {
     }
+
     elevio_stopLamp(0);
+
+    if(elevio_floorSensor() != -1) {
+        openDoor(head);
+    }
 }
