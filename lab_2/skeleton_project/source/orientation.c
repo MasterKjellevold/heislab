@@ -1,15 +1,18 @@
-#include "moveToFloor.h"
+#include "orientation.h"
 
 // Variables
 int lastFloor;
 MotorDirection lastDir;
 //------------
 
+
+//returnerer siste etasje heisen var i
 int getLastFloor() {
     updateLastFloor();
     return lastFloor;
 }
 
+// sistse direction heisen var i
 MotorDirection getLastDir() {
     return lastDir;
 }
@@ -28,6 +31,8 @@ void updateLastDir(MotorDirection newDir, int currentFloor) {
     }
 }
 
+
+// orienterer heisen under initialiseringa
 void orientate() {
     printf("oriantating\n");
     int floor;

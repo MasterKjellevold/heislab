@@ -2,9 +2,9 @@
 #include "queue.h"
 
 
+// legger til ny order i køen
 void addOrderToQueue(OrderList** head, Order newOrder){
 
-    //printf("Adding floor %d to queue\n", newOrder.floor);
     //lage ny noede
     OrderList* newNode = (OrderList*)malloc(sizeof(OrderList));
     newNode->order = newOrder;
@@ -31,8 +31,9 @@ void addOrderToQueue(OrderList** head, Order newOrder){
     elevio_buttonLamp(newOrder.floor, newOrder.btype, 1);
 }
 
+
+// legger til order først i køen
 void addOrderFirstToQueue(OrderList** head, Order newOrder) {
-    //printf("Adding floor %d to queue\n", newOrder.floor);
     //lage ny noede
     OrderList* newNode = (OrderList*)malloc(sizeof(OrderList));
     newNode->order = newOrder;
@@ -45,15 +46,15 @@ void addOrderFirstToQueue(OrderList** head, Order newOrder) {
 
 }
 
-void pop(OrderList **head){ // delete the first element
+
+// delete the first element
+void pop(OrderList **head){ 
 
     if (*head == NULL) { //tom liste
-       // printf("List is empty. Cannot pop.\n");
         return;
     }
 
 
-    // printf("popping floor %d \n", (*(*head)).order.floor);
 
     //Turning of light
     elevio_buttonLamp((*head)->order.floor, (*head)->order.btype, 0);
@@ -64,6 +65,8 @@ void pop(OrderList **head){ // delete the first element
     free(temp);
 }
 
+
+//returnerer lengden av køen
 int get_len_of_queue(OrderList* head){
     int len = 1;
     if (head == NULL)
@@ -78,13 +81,17 @@ int get_len_of_queue(OrderList* head){
     return len;
 }
 
+
+// popper alt fra køen
 void freeList(OrderList **head) {
     while(*head != NULL) {
         pop(head);
     }
 }
 
-void removeFloorOrders(OrderList **head, int floor) { //Fjerner alle bestillinger tilhørende parameteren floor
+
+// fjerner alle bestillinger tilhørende en gitt etasje
+void removeFloorOrders(OrderList **head, int floor) {
     
     OrderList *prev = *head;
     OrderList *current = prev->next;
@@ -125,6 +132,8 @@ void removeFloorOrders(OrderList **head, int floor) { //Fjerner alle bestillinge
     
 }
 
+
+// går gjennom alle knappene og legger til ny ordre
 void loopThroughButtons(OrderList ** head){
 
     // løper gjennom alle knappene
@@ -140,6 +149,8 @@ void loopThroughButtons(OrderList ** head){
     }
 }
 
+
+//sjekker om orderen finnes fra før av, hvis ikke legges til i køen
 void handleNewOrder(OrderList **head, Order newOrder) {
 
     //Checking if the order list is empty, and adding ordre directly
@@ -176,6 +187,8 @@ void handleNewOrder(OrderList **head, Order newOrder) {
 }
 
 
+
+//prioriteringsfunksjon på hvilke etasjer som blir prioritert. 
 int prioritize(OrderList ** head, Order newOrder){
 
     int currentOrderFloor = (*head)->order.floor;

@@ -1,6 +1,8 @@
 #include "master.h"
 #include "time.h"
 
+
+//printer matrise
 void printMatrix(Matrix *matrix) {
     for (int i = 0; i < matrix->rows; i++) {
         for (int j = 0; j < matrix->cols; j++) {
@@ -11,6 +13,8 @@ void printMatrix(Matrix *matrix) {
     printf("\n");
 }
 
+
+//lager beslutningsmatrisa
 void create_beslutningsmatrise(Matrix * m){
     m->rows = ROW_NUM;
     m->cols = COL_NUM;
@@ -55,15 +59,21 @@ void create_mask_matrix(Matrix * m){
     //-----------------------------------------------------------------------------------------------------------------------------------------
 }
 
+
+
 void master_init(Matrix * bm, Matrix * mm){
 
     create_beslutningsmatrise(bm);
     create_mask_matrix(mm);
+    printf("Beslutningsmatrise:\n");
     printMatrix(bm);
+    printf("Maskematrise:\n");
     printMatrix(mm);
 
 }
 
+
+// her er selve aksjonen. 
 void what_to_do(Order nextOrder, int lastFloor, int stop, int doorOpen, Matrix * bm, Matrix * mm, OrderList ** head){
 
     int isBetween;
@@ -106,7 +116,7 @@ void what_to_do(Order nextOrder, int lastFloor, int stop, int doorOpen, Matrix *
     int result[7] = {0, 0, 0, 0, 0, 0, 0};
 
 
-    // oge matrix
+    // & matrix
     int og_matrix[ROW_NUM][COL_NUM];
     for (int i = 0; i < COL_NUM; i++)
     {
@@ -132,13 +142,12 @@ void what_to_do(Order nextOrder, int lastFloor, int stop, int doorOpen, Matrix *
     
 
 
+
+    //aksjoner ->
     if(result[0] == 1){ //stop
         handleStop(head);
         return;
     }
-
-
-
     if(result[1] == 1){
         elevio_motorDirection(DIRN_UP);
         updateLastDir(DIRN_UP, elevio_floorSensor());
@@ -166,6 +175,8 @@ void what_to_do(Order nextOrder, int lastFloor, int stop, int doorOpen, Matrix *
     
 }
 
+
+// åpne døra
 void openDoor(OrderList ** head){
     elevio_doorOpenLamp(1);
     //printf("opening door\n");
@@ -199,6 +210,8 @@ void openDoor(OrderList ** head){
     
 }
 
+
+//hva som skjer om stoppknappen blir trykket
 void handleStop(OrderList ** head) {
     printf("STOP\n");
     freeList(head);
